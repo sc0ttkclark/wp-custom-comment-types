@@ -24,7 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 define( 'WP_CCT_DIR', plugin_dir_path( __FILE__ ) );
 
-add_action( 'plugins_loaded', 'wp_custom_comment_types_load', 20 );
+/**
+ * Load our comment file if it doesn't conflict
+ */
 function wp_custom_comment_types_load() {
 
 	// Avoid potential clusterducks
@@ -33,3 +35,4 @@ function wp_custom_comment_types_load() {
 	}
 
 }
+add_action( 'plugins_loaded', 'wp_custom_comment_types_load', 20 );
