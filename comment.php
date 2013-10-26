@@ -857,6 +857,8 @@ function _get_custom_object_labels( $object, $nohier_vs_hier_defaults ) {
 	if ( !isset( $object->labels['all_items'] ) && isset( $object->labels['menu_name'] ) )
 		$object->labels['all_items'] = $object->labels['menu_name'];
 
+	$defaults = array();
+
 	foreach ( $nohier_vs_hier_defaults as $key => $value )
 			$defaults[$key] = $object->hierarchical ? $value[1] : $value[0];
 
@@ -1174,60 +1176,6 @@ function get_comments_by_author_sql( $comment_type, $full = true, $comment_autho
 	$sql .= ')';
 
 	return $sql;
-}
-
-/**
- * Updates comments in cache.
- *
- * @package WordPress
- * @subpackage Cache
- * @since 4.0.0
- *
- * @param array $comments Array of comment objects
- */
-function update_comment_cache( &$comments ) {
-	if ( ! $comments )
-		return;
-
-	foreach ( $comments as $comment )
-		wp_cache_add( $comment->comment_ID, $comment, 'comments' );
-}
-
-/**
- * Will clean the comment in the cache.
- *
- * Cleaning means delete from the cache of the comment. Will call to clean the term
- * object cache associated with the comment ID.
- *
- * This function not run if $_wp_suspend_cache_invalidation is not empty. See
- * wp_suspend_cache_invalidation().
- *
- * @package WordPress
- * @subpackage Cache
- * @since 4.0.0
- *
- * @uses do_action() Calls 'clean_comment_cache' on $id before adding children (if any).
- *
- * @param int|object $comment Comment ID or object to remove from the cache
- */
-function clean_comment_cache( $comment ) {
-	global $_wp_suspend_cache_invalidation, $wpdb;
-
-	if ( ! empty( $_wp_suspend_cache_invalidation ) )
-		return;
-
-	$comment = get_comment( $comment );
-	if ( empty( $comment ) )
-		return;
-
-	wp_cache_delete( $comment->comment_ID, 'comments' );
-	wp_cache_delete( $comment->comment_ID, 'comment_meta' );
-
-	clean_object_term_cache( $comment->comment_ID, $comment->comment_type );
-
-	do_action( 'clean_comment_cache', $comment->comment_ID, $comment );
-
-	wp_cache_set( 'last_changed', microtime(), 'comments' );
 }
 
 /**
