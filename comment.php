@@ -649,7 +649,7 @@ function register_comment_type( $comment_type, $args = array() ) {
  * @param string $comment_type Name of the comment type
  * @return bool True if successful, false if not
  */
-function register_taxonomy_for_object_type( $post_type, $comment_type) {
+function register_post_type_for_comment_type( $post_type, $comment_type) {
 	global $wp_post_types;
 
 	if ( !isset($wp_post_types[$post_type]) )
